@@ -103,7 +103,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="bg-[#15171C] text-emerald-400 font-bold px-3 py-1 flex items-center space-x-2 shrink-0 z-20 border-r border-[#ECE8DC]/15 shadow-sm h-full">
           <Globe className="w-3.5 h-3.5 text-[#7BD9E4] animate-pulse" />
           <span className="tracking-wider uppercase text-[10px] text-white">
-            GLOBAL EXPORT TICKER
+            GLOBAL EXPORT
           </span>
           <span className="hidden sm:inline-block px-1.5 py-0.5 rounded bg-emerald-900/60 text-emerald-300 font-mono-code text-[9px] border border-emerald-500/30">
             45+ NATIONS
