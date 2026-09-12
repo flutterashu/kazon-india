@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+.font-tech {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+.font-mono-code {
+  font-family: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+}
+
+.font-display-condensed {
+  font-family: 'Big Shoulders Display', sans-serif;
+}
+
+.font-ibm-mono {
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+}
+
+/* Drafting blueprint millimeter grid */
+.blueprint-grid {
+  background-image:
+    linear-gradient(rgba(21, 23, 28, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(21, 23, 28, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(21, 23, 28, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(21, 23, 28, 0.03) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+}
+
+/* Vertical millimeter measurement ruler */
+.ruler-edge-bg {
+  background-image:
+    repeating-linear-gradient(to bottom, rgba(21, 23, 28, 0.35) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(to bottom, rgba(21, 23, 28, 0.15) 0 1px, transparent 1px 8px);
+  background-size: 14px 100%, 7px 100%;
+  background-repeat: no-repeat;
+}
+
+/* Ghost stroke typography effect */
+.ghost-stroke {
+  color: transparent;
+  -webkit-text-stroke: 1.5px #15171C;
+}
+
+@keyframes rise {
+  to { transform: translateY(0); }
+}
+
+.animate-rise {
+  transform: translateY(112%);
+  animation: rise 0.85s cubic-bezier(0.2, 0.75, 0.15, 1) forwards;
+}
+
+@keyframes kenburns {
+  from { transform: scale(1) translate(0, 0); }
+  to { transform: scale(1.15) translate(-4px, 4px); }
+}
+
+.animate-kenburns {
+  animation: kenburns 16s ease-in-out infinite alternate;
+}
+
+/* Custom scrollbar for technical specification tables and 3D viewport */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6);
+}
+
+/* Continuous infinite auto-scrolling ticker animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: inline-flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee 32s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}

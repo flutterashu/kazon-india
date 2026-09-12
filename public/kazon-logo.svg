@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 190" width="100%" height="100%">
+  <!-- Left Brand Green Solid Pillar -->
+  <rect x="14" y="10" width="58" height="170" rx="3" fill="#085F2C" />
+
+  <!-- Medical Plus Cross in Deep Black -->
+  <!-- Horizontal arm -->
+  <rect x="88" y="85" width="80" height="24" rx="2" fill="#1C1C1C" />
+  <!-- Vertical arm -->
+  <rect x="122" y="28" width="24" height="136" rx="2" fill="#1C1C1C" />
+
+  <!-- Stylized K Ribbon with White Protective Halo Outline -->
+  <!-- White halo outline to cleanly separate from black cross -->
+  <path
+    d="M 166 40 C 145 68, 126 84, 123 100 C 120 115, 142 135, 168 152 C 160 156, 148 158, 138 156 C 120 144, 108 124, 110 102 C 112 80, 130 58, 154 36 Z"
+    fill="#085F2C"
+    stroke="#FFFFFF"
+    stroke-width="5"
+    stroke-linejoin="round"
+  />
+
+  <!-- Wordmark 'azon' -->
+  <text
+    x="180"
+    y="124"
+    font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+    font-weight="900"
+    font-size="82"
+    letter-spacing="-1.5"
+    fill="#1A1A1A"
+  >azon</text>
+
+  <!-- Trademark TM -->
+  <text
+    x="328"
+    y="62"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-weight="800"
+    font-size="18"
+    fill="#1A1A1A"
+  >TM</text>
+
+  <!-- Tagline 'a step towards expectation' in elegant italics -->
+  <text
+    x="146"
+    y="152"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-style="italic"
+    font-size="17"
+    fill="#242424"
+  >a step towards expectation</text>
+
+  <!-- Bottom Brand Entity: Kazon India Pvt. Ltd. -->
+  <text
+    x="88"
+    y="182"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-weight="800"
+    font-size="24"
+    letter-spacing="-0.5"
+    fill="#085F2C"
+  >Kazon India Pvt. Ltd.</text>
+</svg>

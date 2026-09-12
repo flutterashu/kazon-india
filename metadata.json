@@ -1,0 +1,6 @@
+{
+  "name": "Kazon India - Precision Orthopedic Implants",
+  "description": "Precision-machined medical-grade titanium and stainless steel orthopedic implants, spinal hardware, and surgical instruments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
