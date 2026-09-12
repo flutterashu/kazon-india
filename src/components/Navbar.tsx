@@ -13,9 +13,28 @@ import {
   ChevronRight,
   Activity,
   Gauge,
-  PhoneCall
+  PhoneCall,
+  Globe
 } from 'lucide-react';
 import { KazonLogo } from './KazonLogo';
+
+const EXPORT_CORRIDORS = [
+  { country: 'TURKEY', port: 'Istanbul (IST) Air Cargo', compliance: 'CE MDR Registered' },
+  { country: 'VIETNAM', port: 'Hanoi & HCMC Clinical Hubs', compliance: 'MOH Cleared' },
+  { country: 'COLOMBIA', port: 'Bogotá & Medellín Trauma Centres', compliance: 'INVIMA Certified' },
+  { country: 'KENYA', port: 'Nairobi East Africa Logistics', compliance: 'PPB Cleared' },
+  { country: 'SAUDI ARABIA', port: 'Riyadh & Jeddah Consignments', compliance: 'SFDA Medical Device' },
+  { country: 'MEXICO', port: 'CDMX & Guadalajara Hubs', compliance: 'COFEPRIS Expedited' },
+  { country: 'EGYPT', port: 'Cairo Arthroplasty & Spine Supply', compliance: 'EDA Registered' },
+  { country: 'SOUTH AFRICA', port: 'Johannesburg Level-1 Trauma', compliance: 'SAHPRA Class IIb' },
+  { country: 'UNITED ARAB EMIRATES', port: 'Dubai Logistics City (DWC)', compliance: 'MoHAP Cleared' },
+  { country: 'BRAZIL', port: 'São Paulo Specialized Hubs', compliance: 'ANVISA Technical' },
+  { country: 'INDONESIA', port: 'Jakarta Orthopedic Supply', compliance: 'Kemenkes Approved' },
+  { country: 'PHILIPPINES', port: 'Manila Spine & Trauma Hospitals', compliance: 'FDA CDRRHR' },
+  { country: 'POLAND & CZECH REP', port: 'Central Europe Direct Freight', compliance: 'CE MDR 2017/745' },
+  { country: 'MALAYSIA', port: 'Kuala Lumpur Ortho Facilities', compliance: 'MDA Registered' },
+  { country: 'PERU', port: 'Lima Arthrodesis Networks', compliance: 'DIGEMID Authorized' },
+];
 
 interface NavbarProps {
   isDarkMode?: boolean;
@@ -78,6 +97,71 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors shadow-sm">
+      {/* 0. CONTINUOUS GLOBAL EXPORT CORRIDORS TICKER (Positioned on the Very Top of Nav Bar) */}
+      <div className="w-full bg-[#0C1015] text-[#ECE8DC] border-b border-[#15171C] text-[11px] font-mono-code select-none relative overflow-hidden flex items-center h-8">
+        {/* Left Fixed Authority Pill */}
+        <div className="bg-[#15171C] text-emerald-400 font-bold px-3 py-1 flex items-center space-x-2 shrink-0 z-20 border-r border-[#ECE8DC]/15 shadow-sm h-full">
+          <Globe className="w-3.5 h-3.5 text-[#7BD9E4] animate-pulse" />
+          <span className="tracking-wider uppercase text-[10px] text-white">
+            GLOBAL EXPORT TICKER
+          </span>
+          <span className="hidden sm:inline-block px-1.5 py-0.5 rounded bg-emerald-900/60 text-emerald-300 font-mono-code text-[9px] border border-emerald-500/30">
+            45+ NATIONS
+          </span>
+        </div>
+
+        {/* Gradient Left Fade Mask */}
+        <div className="pointer-events-none absolute left-48 sm:left-56 top-0 bottom-0 w-10 bg-gradient-to-r from-[#0C1015] to-transparent z-10 hidden sm:block" />
+
+        {/* Continuous Seamless Infinite Marquee Track */}
+        <div className="overflow-hidden whitespace-nowrap flex-1 relative flex items-center">
+          <div className="animate-marquee flex items-center text-[10.5px] uppercase tracking-wider py-1 hover:cursor-pointer">
+            {/* Iteration 1 */}
+            <div className="flex items-center space-x-8 shrink-0 pr-8">
+              {EXPORT_CORRIDORS.map((c, idx) => (
+                <span key={`corridor-1-${idx}`} className="inline-flex items-center space-x-2">
+                  <span className="font-bold text-[#7BD9E4]">● {c.country}:</span>
+                  <span className="text-[#ECE8DC]/90">{c.port}</span>
+                  <span className="text-emerald-400 font-semibold text-[9.5px] bg-emerald-950/60 px-1 rounded border border-emerald-800/40">
+                    [{c.compliance}]
+                  </span>
+                  <span className="text-[#ECE8DC]/20 ml-2">|</span>
+                </span>
+              ))}
+            </div>
+
+            {/* Iteration 2 (Seamless loop duplicate) */}
+            <div className="flex items-center space-x-8 shrink-0 pr-8" aria-hidden="true">
+              {EXPORT_CORRIDORS.map((c, idx) => (
+                <span key={`corridor-2-${idx}`} className="inline-flex items-center space-x-2">
+                  <span className="font-bold text-[#7BD9E4]">● {c.country}:</span>
+                  <span className="text-[#ECE8DC]/90">{c.port}</span>
+                  <span className="text-emerald-400 font-semibold text-[9.5px] bg-emerald-950/60 px-1 rounded border border-emerald-800/40">
+                    [{c.compliance}]
+                  </span>
+                  <span className="text-[#ECE8DC]/20 ml-2">|</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Gradient Right Fade Mask */}
+        <div className="pointer-events-none absolute right-32 top-0 bottom-0 w-10 bg-gradient-to-l from-[#0C1015] to-transparent z-10 hidden md:block" />
+
+        {/* Right Fixed Direct Action Pill */}
+        <button
+          onClick={onRequestQuote}
+          className="bg-[#11161D] hover:bg-[#085F2C] text-[#ECE8DC] font-bold px-3 py-1 flex items-center space-x-1.5 shrink-0 z-20 border-l border-[#ECE8DC]/15 transition-colors text-[10px] uppercase tracking-wider h-full group"
+          title="Click to dispatch instant export CIF / FOB quotation"
+        >
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping mr-1" />
+          <span className="hidden sm:inline">EXPORT DESK:</span>
+          <span className="text-emerald-300 group-hover:text-white">DISPATCH</span>
+          <span className="group-hover:translate-x-0.5 transition-transform duration-150">→</span>
+        </button>
+      </div>
+
       {/* Precision Orthopedic Sterile Metrology Top Strip */}
       <div className="w-full bg-slate-100/90 dark:bg-slate-900/90 border-b border-slate-200/80 dark:border-slate-800/80 text-[11px] font-mono-code transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex items-center justify-between">
