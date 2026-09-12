@@ -578,7 +578,7 @@ export const Hero: React.FC<HeroProps> = ({
                   <div className="overflow-hidden h-20 sm:h-22">
                     <img
                       src={currentData.photoUrl}
-                      alt={currentData.cap}
+                      alt={`${currentData.desc} (${currentData.tabLabel}) - Orthopedic Surgical Implant Micro-Inspection`}
                       className="w-full h-full object-cover opacity-90 animate-kenburns"
                     />
                   </div>

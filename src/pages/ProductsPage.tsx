@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { PRODUCTS } from '../data/products';
 import { OrthopedicProduct } from '../types';
 import { ThreeImplantViewer } from '../components/ThreeImplantViewer';
 import { ProductCatalog } from '../components/ProductCatalog';
 import { Box, FileCheck, FileText, Download, ShieldCheck, Cpu } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SITE_URL } from '../utils/seo';
 
 interface ProductsPageProps {
   isDarkMode: boolean;
@@ -19,8 +21,44 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
 }) => {
   const [selectedProduct, setSelectedProduct] = useState<OrthopedicProduct>(PRODUCTS[0]);
 
+  const canonicalUrl = `${SITE_URL}/products`;
+  const breadcrumbsSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      {
+        '@type': 'ListItem',
+        'position': 1,
+        'name': 'Home',
+        'item': `${SITE_URL}/`
+      },
+      {
+        '@type': 'ListItem',
+        'position': 2,
+        'name': 'Orthopedic Implants',
+        'item': canonicalUrl
+      }
+    ]
+  };
+
   return (
     <div className="py-8">
+      <Helmet>
+        <title>Orthopedic Implants & 3D CAD Catalog | Kazon India</title>
+        <meta 
+          name="description" 
+          content="Explore Kazon India's comprehensive portfolio of titanium & stainless steel orthopedic implants: LCP/DCP plates, intramedullary nails, spine hardware, and external fixators." 
+        />
+        <meta property="og:title" content="Orthopedic Implants & 3D CAD Catalog | Kazon India" />
+        <meta property="og:description" content="Precision-machined medical implants with micron tolerances, STEP CAD models, and ISO 13485:2016 certification dossiers." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <link rel="canonical" href={canonicalUrl} />
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbsSchema)}
+        </script>
+      </Helmet>
+
       {/* 3D CAD Metrology Inspector Section */}
       <section id="implant-3d-inspector" className="pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,7 +69,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                 WebGL Hardware Metrology Viewer
               </div>
               <h1 className="text-3xl sm:text-4xl font-extrabold font-tech tracking-tight">
-                Interactive 3D Implant Inspector & Tolerances
+                Orthopedic Implants & 3D CAD Metrology Catalog
               </h1>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl">
                 Click and drag to rotate in full 360°. Inspect multi-part exploded assemblies, wireframe CNC toolpath meshes, and micron-level caliper callouts.

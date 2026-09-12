@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { PRODUCTS } from '../data/products';
 import { FileCheck, ShieldCheck, Send, CheckCircle2, Building2, Package, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SITE_URL } from '../utils/seo';
 
 interface RequestQuotePageProps {
   isDarkMode: boolean;
@@ -28,8 +30,23 @@ export const RequestQuotePage: React.FC<RequestQuotePageProps> = ({ isDarkMode }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const canonicalUrl = `${SITE_URL}/request-quote`;
+
   return (
     <div className="py-8 sm:py-12">
+      <Helmet>
+        <title>Request Institutional Orthopedic Implant Quote & Samples | Kazon India</title>
+        <meta 
+          name="description" 
+          content="Request direct factory pricing, clinical evaluation sample kits, and international export freight terms (FOB/CIF) directly from Kazon India Pvt. Ltd." 
+        />
+        <meta property="og:title" content="Request Institutional Orthopedic Quote | Kazon India" />
+        <meta property="og:description" content="Direct factory pricing, evaluation sample kits, and volume standing order discounts for orthopedic surgeons and hospitals." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
+
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb / Back link */}
         <Link

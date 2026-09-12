@@ -20,6 +20,8 @@ export const KazonLogo: React.FC<KazonLogoProps> = ({
           className="h-full w-auto max-h-full"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="Kazon India Logo"
         >
           {/* Left Green Pillar */}
           <rect x="6" y="6" width="46" height="158" rx="3" fill="#085F2C" />
@@ -66,6 +68,8 @@ export const KazonLogo: React.FC<KazonLogoProps> = ({
             className="h-full w-auto"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Kazon India Logo"
           >
             <rect x="6" y="6" width="46" height="158" rx="3" fill="#085F2C" />
             <rect
@@ -124,6 +128,8 @@ export const KazonLogo: React.FC<KazonLogoProps> = ({
         className="w-full h-full max-h-full"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-label="Kazon India - Orthopedic Implants & Surgical Innovation"
       >
         {/* Left Brand Green Solid Pillar */}
         <rect x="14" y="12" width="58" height="166" rx="2" fill="#085F2C" />

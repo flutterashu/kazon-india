@@ -88,6 +88,11 @@ export const Navbar: React.FC<NavbarProps> = ({
       badge: 'ISO 13485'
     },
     { 
+      label: 'About', 
+      path: '/about',
+      badge: null
+    },
+    { 
       label: 'Contact', 
       path: '/contact',
       icon: Phone,

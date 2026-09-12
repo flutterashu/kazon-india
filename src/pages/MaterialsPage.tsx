@@ -1,15 +1,32 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { MaterialScienceComparator } from '../components/MaterialScienceComparator';
 import { Layers, ShieldCheck, Download, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SITE_URL } from '../utils/seo';
 
 interface MaterialsPageProps {
   isDarkMode: boolean;
 }
 
 export const MaterialsPage: React.FC<MaterialsPageProps> = ({ isDarkMode }) => {
+  const canonicalUrl = `${SITE_URL}/materials`;
+
   return (
     <div className="py-8">
+      <Helmet>
+        <title>Medical Metallurgy & Biomaterials Science | Kazon India</title>
+        <meta 
+          name="description" 
+          content="Technical comparison of medical grade Ti-6Al-4V ELI (ASTM F136), 316L Stainless Steel (ASTM F138), and cortical bone biomechanics by Kazon India." 
+        />
+        <meta property="og:title" content="Medical Metallurgy & Biomaterials Science | Kazon India" />
+        <meta property="og:description" content="Certified ASTM F136 titanium and ASTM F138 stainless steel medical implant metallurgy with full heat-lot traceability." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
         <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-2">
           <Layers className="w-3.5 h-3.5 mr-1.5" />
@@ -43,9 +60,10 @@ export const MaterialsPage: React.FC<MaterialsPageProps> = ({ isDarkMode }) => {
           <div className="flex items-center space-x-3 shrink-0">
             <Link
               to="/request-quote"
-              className="px-6 py-3 rounded-xl text-xs font-bold bg-[#085F2C] hover:bg-[#064e24] text-white transition-all shadow-md shadow-[#085F2C]/25"
+              className="px-6 py-3 rounded-xl bg-[#085F2C] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#064a22] transition-colors flex items-center space-x-2"
             >
-              Request Certified MTR Dossier
+              <span>Request Mill Test Certs</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>

@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { OrthopedicProduct } from '../types';
 import { Box, Download, ShieldCheck, Check, ArrowRight, Filter, Layers, FileText, CheckCircle2, Search, X } from 'lucide-react';
+import { slugifyCategory } from '../utils/seo';
 
 interface ProductCatalogProps {
   products: OrthopedicProduct[];
@@ -188,16 +190,24 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                   {/* Product Card Top */}
                   <div className="p-6">
                     <div className="flex items-start justify-between gap-2 mb-3">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono-code bg-emerald-500/10 text-[#085F2C] dark:text-emerald-400 border border-emerald-500/20">
+                      <Link
+                        to={`/category/${slugifyCategory(product.family)}`}
+                        className="px-2.5 py-0.5 rounded-full text-[10px] font-mono-code bg-emerald-500/10 text-[#085F2C] dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
+                      >
                         {product.family} • {product.anatomy}
-                      </span>
+                      </Link>
                       <span className="text-[11px] font-mono-code text-slate-400">
                         {product.material.split('(')[0].trim()}
                       </span>
                     </div>
 
                     <h3 className="text-base sm:text-lg font-bold font-tech text-slate-900 dark:text-white mb-2 line-clamp-1">
-                      {product.name}
+                      <Link
+                        to={`/products/${product.id}`}
+                        className="hover:text-[#085F2C] dark:hover:text-emerald-400 transition-colors"
+                      >
+                        {product.name}
+                      </Link>
                     </h3>
 
                     <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 leading-relaxed">

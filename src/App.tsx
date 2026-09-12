@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PRODUCTS } from './data/products';
 import { OrthopedicProduct, AudienceRole } from './types';
 import { Navbar } from './components/Navbar';
@@ -12,6 +12,9 @@ import { TechnicalDocModal } from './components/TechnicalDocModal';
 // Pages
 import { HomePage } from './pages/HomePage';
 import { ProductsPage } from './pages/ProductsPage';
+import { ProductDetailPage } from './pages/ProductDetailPage';
+import { CategoryPage } from './pages/CategoryPage';
+import { AboutPage } from './pages/AboutPage';
 import { AnatomyPage } from './pages/AnatomyPage';
 import { MaterialsPage } from './pages/MaterialsPage';
 import { ManufacturingPage } from './pages/ManufacturingPage';
@@ -83,6 +86,50 @@ export default function App() {
                   onOpenDocModal={handleOpenDoc}
                 />
               }
+            />
+            <Route
+              path="/products/:productId"
+              element={
+                <ProductDetailPage
+                  isDarkMode={isDarkMode}
+                  onOpenQuoteModal={handleOpenQuote}
+                  onOpenDocModal={handleOpenDoc}
+                  onOpenEngineerModal={() => setIsAskEngineerModalOpen(true)}
+                />
+              }
+            />
+            <Route
+              path="/product/:productId"
+              element={
+                <ProductDetailPage
+                  isDarkMode={isDarkMode}
+                  onOpenQuoteModal={handleOpenQuote}
+                  onOpenDocModal={handleOpenDoc}
+                  onOpenEngineerModal={() => setIsAskEngineerModalOpen(true)}
+                />
+              }
+            />
+            <Route
+              path="/category/:categorySlug"
+              element={
+                <CategoryPage
+                  isDarkMode={isDarkMode}
+                  onOpenQuoteModal={handleOpenQuote}
+                />
+              }
+            />
+            <Route
+              path="/products/category/:categorySlug"
+              element={
+                <CategoryPage
+                  isDarkMode={isDarkMode}
+                  onOpenQuoteModal={handleOpenQuote}
+                />
+              }
+            />
+            <Route
+              path="/about"
+              element={<AboutPage isDarkMode={isDarkMode} />}
             />
             <Route
               path="/anatomy"

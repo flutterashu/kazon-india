@@ -1,0 +1,13 @@
+# Robots.txt for Kazon India (https://www.kazonindia.com)
+# CDSCO Licensed & ISO 13485:2016 Certified Orthopedic Implant Manufacturer
+
+User-agent: *
+Allow: /
+
+# Disallow internal application builds or source files
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /dist/
+
+# XML Sitemap Index
+Sitemap: https://www.kazonindia.com/sitemap.xml

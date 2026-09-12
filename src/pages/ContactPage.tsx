@@ -15,7 +15,9 @@ import {
   UserCheck,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { COMPANY_DATA } from '../data/company';
+import { SITE_URL, ORGANIZATION_SCHEMA } from '../utils/seo';
 
 interface ContactPageProps {
   isDarkMode: boolean;
@@ -34,8 +36,26 @@ export const ContactPage: React.FC<ContactPageProps> = ({ isDarkMode }) => {
     setSubmitted(true);
   };
 
+  const canonicalUrl = `${SITE_URL}/contact`;
+
   return (
     <div className="py-8 sm:py-12">
+      <Helmet>
+        <title>Contact Kazon India | Surgical Implant Manufacturer & Global Export Desk</title>
+        <meta 
+          name="description" 
+          content="Connect with Kazon India's biomedical engineering team and global export desk. Plant in Tronica City Industrial Area, NCR Delhi. Phone: +91-7827237179." 
+        />
+        <meta property="og:title" content="Contact Kazon India - Orthopedic Implant Manufacturer" />
+        <meta property="og:description" content="Direct factory procurement and global export desk for CDSCO and CE MDR compliant orthopedic and spinal implants." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <link rel="canonical" href={canonicalUrl} />
+        <script type="application/ld+json">
+          {JSON.stringify(ORGANIZATION_SCHEMA)}
+        </script>
+      </Helmet>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link
           to="/"

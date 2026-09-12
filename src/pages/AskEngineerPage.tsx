@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Cpu, UploadCloud, Send, CheckCircle2, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SITE_URL } from '../utils/seo';
 
 interface AskEngineerPageProps {
   isDarkMode: boolean;
@@ -28,8 +30,23 @@ export const AskEngineerPage: React.FC<AskEngineerPageProps> = ({ isDarkMode }) 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const canonicalUrl = `${SITE_URL}/ask-engineer`;
+
   return (
     <div className="py-8 sm:py-12">
+      <Helmet>
+        <title>Consult Biomedical & CNC Machining Engineers | Kazon India</title>
+        <meta 
+          name="description" 
+          content="Consult directly with Kazon India's precision orthopedic engineering leads regarding custom tolerances, STEP CAD files, titanium metallurgy, or OEM manufacturing." 
+        />
+        <meta property="og:title" content="Consult Biomedical & CNC Machining Engineers | Kazon India" />
+        <meta property="og:description" content="Direct technical consultation with orthopedic design engineers and Swiss CNC production specialists." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
+
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Link */}
         <Link

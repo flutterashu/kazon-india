@@ -219,6 +219,11 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/about" className="hover:text-[#085F2C] dark:hover:text-emerald-400 transition-colors">
+                  About Kazon India
+                </Link>
+              </li>
+              <li>
                 <Link to="/contact" className="hover:text-[#085F2C] dark:hover:text-emerald-400 transition-colors">
                   Delhi Head Office Contact
                 </Link>

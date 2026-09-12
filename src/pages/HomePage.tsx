@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Hero } from '../components/Hero';
 import { AudienceNav } from '../components/AudienceNav';
 import { ThreeImplantViewer } from '../components/ThreeImplantViewer';
 import { PRODUCTS } from '../data/products';
 import { OrthopedicProduct, AudienceRole } from '../types';
+import { SITE_URL, ORGANIZATION_SCHEMA } from '../utils/seo';
 import {
   SwissCncMicroIllustration,
   TitaniumMetallurgyMicroIllustration,
@@ -49,6 +51,22 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   return (
     <div className="bg-white text-slate-900">
+      <Helmet>
+        <title>Kazon India | Precision Orthopedic Implants, Spine Systems & Surgical Tools</title>
+        <meta 
+          name="description" 
+          content="Kazon India is a premier CDSCO-licensed and ISO 13485:2016 certified manufacturer of orthopedic implants, locking compression plates, intramedullary nails, spine hardware, and surgical instruments." 
+        />
+        <meta property="og:title" content="Kazon India - Precision Orthopedic Implants & Surgical Innovation" />
+        <meta property="og:description" content="Precision-machined medical-grade titanium and stainless steel orthopedic implants with micron tolerances for trauma surgeons and health ministries in 45+ nations." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${SITE_URL}/`} />
+        <link rel="canonical" href={`${SITE_URL}/`} />
+        <script type="application/ld+json">
+          {JSON.stringify(ORGANIZATION_SCHEMA)}
+        </script>
+      </Helmet>
+
       {/* 1. Award-Winning Manufacturer & Global Exporter Hero Viewport */}
       <Hero
         onExploreCatalog={() => navigate('/products')}
