@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ShieldCheck, MapPin, Mail, Phone, ArrowUp, Award, Building2, FileText, CheckCircle2 } from 'lucide-react';
 import { KazonLogo } from './KazonLogo';
 import { COMPANY_DATA } from '../data/company';
+import { trackCTA, trackContactClick, trackEvent } from '../utils/analytics';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -59,6 +60,7 @@ export const Footer: React.FC = () => {
                 </div>
                 <a
                   href={`tel:${COMPANY_DATA.director.phone}`}
+                  onClick={() => trackContactClick('phone', COMPANY_DATA.director.phone, 'footer_director_call')}
                   className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-[#085F2C] dark:text-emerald-400 font-mono-code text-[11px] font-semibold border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
                 >
                   Direct Call
@@ -83,7 +85,14 @@ export const Footer: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-[#085F2C] dark:text-emerald-400 shrink-0" />
                 <span>
-                  <strong>Email:</strong> <a href="mailto:info@kazonindia.in" className="hover:underline text-[#085F2C] dark:text-emerald-400">info@kazonindia.in</a>
+                  <strong>Email:</strong>{' '}
+                  <a
+                    href="mailto:info@kazonindia.in"
+                    onClick={() => trackContactClick('email', 'info@kazonindia.in', 'footer_email_link')}
+                    className="hover:underline text-[#085F2C] dark:text-emerald-400"
+                  >
+                    info@kazonindia.in
+                  </a>
                 </span>
               </div>
               <div className="flex items-start space-x-2">
@@ -194,12 +203,20 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link to="/request-quote" className="text-[#085F2C] dark:text-emerald-400 font-semibold hover:underline flex items-center">
+                <Link
+                  to="/request-quote"
+                  onClick={() => trackCTA('request_clinical_sample_kit', 'footer_links')}
+                  className="text-[#085F2C] dark:text-emerald-400 font-semibold hover:underline flex items-center"
+                >
                   Request Clinical Sample Kit →
                 </Link>
               </li>
               <li>
-                <Link to="/ask-engineer" className="hover:text-[#085F2C] dark:hover:text-emerald-400 transition-colors">
+                <Link
+                  to="/ask-engineer"
+                  onClick={() => trackCTA('consult_biomechanical_engineer', 'footer_links')}
+                  className="hover:text-[#085F2C] dark:hover:text-emerald-400 transition-colors"
+                >
                   Consult Biomechanical Engineer
                 </Link>
               </li>
@@ -233,6 +250,7 @@ export const Footer: React.FC = () => {
             <div className="pt-2">
               <Link
                 to="/request-quote"
+                onClick={() => trackCTA('request_formal_quote', 'footer_button')}
                 className="w-full py-2.5 px-3 rounded-xl text-[11px] font-bold bg-[#085F2C] hover:bg-[#064e24] text-white transition-all shadow-md shadow-[#085F2C]/25 flex items-center justify-center space-x-1.5 min-h-[44px]"
               >
                 <span>Request Formal Quote</span>
@@ -261,7 +279,10 @@ export const Footer: React.FC = () => {
               Drugs & Cosmetics Act 1940 / ISO 9001:2015
             </span>
             <button
-              onClick={scrollToTop}
+              onClick={() => {
+                trackEvent('scroll_to_top', { location: 'footer' });
+                scrollToTop();
+              }}
               className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-[#085F2C] dark:hover:text-emerald-400 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
               title="Scroll to Top"
             >

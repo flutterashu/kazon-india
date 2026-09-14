@@ -16,6 +16,7 @@ import {
 import { OrthopedicProduct } from '../types';
 import { ThreeImplantViewer } from './ThreeImplantViewer';
 import { PRODUCTS } from '../data/products';
+import { trackCTA, trackProductInteraction, trackScientificModule } from '../utils/analytics';
 
 interface HeroProps {
   onExploreCatalog: () => void;
@@ -156,6 +157,7 @@ export const Hero: React.FC<HeroProps> = ({
   // Trigger scramble upon changing active tab
   const handleTabChange = (key: TabKey) => {
     setActiveTab(key);
+    trackScientificModule('metrology_stage', 'switch_system_tab', { tab: key });
     const item = TABS_DATA[key];
     triggerScramble(item.dwg, setScrambledDwg);
     triggerScramble(item.desc, setScrambledDesc);
@@ -190,6 +192,12 @@ export const Hero: React.FC<HeroProps> = ({
     const rect = stageRef.current.getBoundingClientRect();
     const xPct = ((e.clientX - rect.left) / rect.width) * 100;
     const yPct = ((e.clientY - rect.top) / rect.height) * 100;
+
+    trackScientificModule('metrology_stage', 'drop_datum_pin', {
+      system_tab: activeTab,
+      x_pct: Math.round(xPct),
+      y_pct: Math.round(yPct),
+    });
     
     setPins(prev => {
       const nextNum = prev.length + 1;
@@ -300,7 +308,10 @@ export const Hero: React.FC<HeroProps> = ({
             {/* Action Row */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <button
-                onClick={onRequestQuote}
+                onClick={() => {
+                  trackCTA('request_export_dossier', 'hero');
+                  onRequestQuote();
+                }}
                 className="font-ibm-mono text-xs uppercase tracking-[0.16em] bg-[#15171C] hover:bg-[#085F2C] text-[#ECE8DC] px-6 py-4 border border-[#15171C] inline-flex items-center space-x-3 transition-all duration-200 active:scale-95 shadow-md group"
               >
                 <span>Request Export Dossier</span>
@@ -308,7 +319,10 @@ export const Hero: React.FC<HeroProps> = ({
               </button>
 
               <button
-                onClick={onExploreCatalog}
+                onClick={() => {
+                  trackCTA('browse_implant_systems', 'hero');
+                  onExploreCatalog();
+                }}
                 className="font-ibm-mono text-xs uppercase tracking-[0.14em] text-[#15171C] hover:text-[#085F2C] border-b border-[#15171C] hover:border-[#085F2C] pb-1 inline-flex items-center space-x-2 transition-colors duration-200 group"
               >
                 <span>Browse Implant Systems</span>
@@ -413,7 +427,10 @@ export const Hero: React.FC<HeroProps> = ({
                   {/* Mode Switcher: 2D Blueprint vs 3D Orbit */}
                   <div className="flex items-center bg-[#1E2530] p-0.5 rounded border border-[#ECE8DC]/20">
                     <button
-                      onClick={() => setStageMode('blueprint')}
+                      onClick={() => {
+                        trackScientificModule('metrology_stage', 'toggle_mode', { mode: 'blueprint' });
+                        setStageMode('blueprint');
+                      }}
                       className={`px-2 py-0.5 text-[9px] uppercase tracking-wider rounded transition-colors ${
                         stageMode === 'blueprint'
                           ? 'bg-[#7BD9E4] text-[#0C1015] font-bold'
@@ -423,7 +440,10 @@ export const Hero: React.FC<HeroProps> = ({
                       Drafting Blueprint
                     </button>
                     <button
-                      onClick={() => setStageMode('3d')}
+                      onClick={() => {
+                        trackScientificModule('metrology_stage', 'toggle_mode', { mode: '3d' });
+                        setStageMode('3d');
+                      }}
                       className={`px-2 py-0.5 text-[9px] uppercase tracking-wider rounded transition-colors ${
                         stageMode === '3d'
                           ? 'bg-[#7BD9E4] text-[#0C1015] font-bold'
@@ -699,7 +719,10 @@ export const Hero: React.FC<HeroProps> = ({
                 Click stage to drop inspection datum reference pins
               </span>
               <button
-                onClick={() => onSelectProduct(currentData.product)}
+                onClick={() => {
+                  trackProductInteraction(currentData.product.id, currentData.product.name, 'view_details', { source: 'hero_full_tech_dossier' });
+                  onSelectProduct(currentData.product);
+                }}
                 className="font-bold text-[#085F2C] hover:underline flex items-center"
               >
                 <span>Full Tech Dossier</span>

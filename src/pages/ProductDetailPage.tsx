@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PRODUCTS } from '../data/products';
 import { OrthopedicProduct } from '../types';
 import { ThreeImplantViewer } from '../components/ThreeImplantViewer';
 import { slugifyCategory, SITE_URL } from '../utils/seo';
+import { trackCTA, trackProductInteraction, trackDossierDownload } from '../utils/analytics';
 import { 
   Box, 
   ShieldCheck, 
@@ -39,6 +40,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const product = PRODUCTS.find(
     (p) => p.id.toLowerCase() === productId?.toLowerCase()
   );
+
+  useEffect(() => {
+    if (product) {
+      trackProductInteraction(product.id, product.name, 'view_details', {
+        family: product.family,
+        material: product.material,
+        anatomy: product.anatomy,
+      });
+    }
+  }, [product]);
 
   if (!product) {
     return (
@@ -276,7 +287,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               {/* Action Buttons */}
               <div className="mt-6 space-y-2.5">
                 <button
-                  onClick={() => onOpenQuoteModal(product)}
+                  onClick={() => {
+                    trackCTA('request_institutional_quotation', 'product_detail_page', {
+                      product_id: product.id,
+                      product_name: product.name,
+                    });
+                    onOpenQuoteModal(product);
+                  }}
                   className="w-full py-3 px-4 rounded-xl bg-[#085F2C] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#064a22] transition-colors flex items-center justify-center space-x-2 shadow-md shadow-[#085F2C]/20"
                 >
                   <Send className="w-4 h-4" />
@@ -284,7 +301,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </button>
 
                 <button
-                  onClick={onOpenEngineerModal}
+                  onClick={() => {
+                    trackCTA('consult_engineering_team', 'product_detail_page', {
+                      product_id: product.id,
+                      product_name: product.name,
+                    });
+                    onOpenEngineerModal();
+                  }}
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors flex items-center justify-center space-x-2"
                 >
                   <PhoneCall className="w-4 h-4 text-[#085F2C]" />
@@ -367,7 +390,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   </div>
 
                   <button
-                    onClick={() => onOpenDocModal(doc.title, doc.type)}
+                    onClick={() => {
+                      trackDossierDownload(doc.title, doc.type, product.id);
+                      trackCTA('view_dossier_modal', 'product_detail_page', {
+                        doc_title: doc.title,
+                        doc_type: doc.type,
+                        product_id: product.id,
+                      });
+                      onOpenDocModal(doc.title, doc.type);
+                    }}
                     className="mt-3 w-full py-1.5 px-3 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-[#085F2C] hover:border-[#085F2C] transition-colors flex items-center justify-center space-x-1"
                   >
                     <FileText className="w-3.5 h-3.5" />

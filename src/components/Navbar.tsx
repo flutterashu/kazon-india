@@ -17,6 +17,7 @@ import {
   Globe
 } from 'lucide-react';
 import { KazonLogo } from './KazonLogo';
+import { trackCTA, trackPhoneHelpline } from '../utils/analytics';
 
 const EXPORT_CORRIDORS = [
   { country: 'TURKEY', port: 'Istanbul (IST) Air Cargo', compliance: 'CE MDR Registered' },
@@ -156,7 +157,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Fixed Direct Action Pill */}
         <button
-          onClick={onRequestQuote}
+          onClick={() => {
+            trackCTA('export_desk_dispatch', 'navbar_ticker');
+            onRequestQuote();
+          }}
           className="bg-[#11161D] hover:bg-[#085F2C] text-[#ECE8DC] font-bold px-3 py-1 flex items-center space-x-1.5 shrink-0 z-20 border-l border-[#ECE8DC]/15 transition-colors text-[10px] uppercase tracking-wider h-full group"
           title="Click to dispatch instant export CIF / FOB quotation"
         >
@@ -292,6 +296,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Direct Factory Dispatch & Export Hotline */}
             <a
               href="tel:+917827237179"
+              onClick={() => trackPhoneHelpline('+917827237179', 'navbar_desktop_dispatch')}
               title="Direct Plant Export Hotline (+91-7827237179)"
               className="hidden sm:inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-emerald-50/50 hover:border-emerald-300 transition-all text-xs text-slate-700 min-h-[42px] shadow-sm group"
             >
@@ -308,6 +313,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Ask an Orthopedic Engineer (Hidden on phone, visible on tablet & desktop) */}
             <Link
               to="/ask-engineer"
+              onClick={() => trackCTA('ask_engineer_nav', 'navbar')}
               className="hidden md:inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-[#085F2C] border border-slate-200 bg-white hover:border-emerald-200 transition-colors min-h-[42px] shadow-sm"
             >
               <Cpu className="w-3.5 h-3.5 text-[#085F2C]" />
@@ -318,6 +324,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Primary RFQ Action in Kazon Surgical Green */}
             <Link
               to="/request-quote"
+              onClick={() => trackCTA('request_hospital_rfq', 'navbar')}
               className="px-3.5 sm:px-4 py-2 rounded-lg text-xs font-bold bg-[#085F2C] hover:bg-[#064e24] text-white transition-all shadow-md shadow-[#085F2C]/25 flex items-center space-x-1.5 min-h-[42px] shrink-0 active:scale-95"
             >
               <FileCheck className="w-3.5 h-3.5 shrink-0" />
@@ -401,7 +408,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row gap-2">
             <Link
               to="/ask-engineer"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => {
+                trackCTA('ask_engineer_nav', 'navbar_mobile_drawer');
+                setMobileMenuOpen(false);
+              }}
               className="flex-1 py-2.5 px-3 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center space-x-2 min-h-[44px] border border-slate-200 dark:border-slate-700 transition-colors"
             >
               <Cpu className="w-4 h-4 text-[#085F2C] dark:text-emerald-400" />
@@ -410,7 +420,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <Link
               to="/request-quote"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => {
+                trackCTA('request_hospital_rfq', 'navbar_mobile_drawer');
+                setMobileMenuOpen(false);
+              }}
               className="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold bg-[#085F2C] hover:bg-[#064e24] text-white flex items-center justify-center space-x-2 shadow-md shadow-[#085F2C]/25 min-h-[44px] transition-colors"
             >
               <FileCheck className="w-4 h-4" />
@@ -430,6 +443,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <a
               href="tel:+917827237179"
+              onClick={() => trackPhoneHelpline('+917827237179', 'navbar_mobile_drawer_hotline')}
               className="px-3 py-1.5 rounded bg-[#085F2C] text-white font-mono-code text-[11px] font-bold shrink-0 hover:bg-[#064e24]"
             >
               Call Hotline

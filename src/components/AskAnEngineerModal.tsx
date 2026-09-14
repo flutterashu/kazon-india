@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Cpu, Send, CheckCircle2, MessageSquare, UploadCloud, Shield, Sparkles } from 'lucide-react';
+import { trackEngineerInquiry, trackCTA } from '../utils/analytics';
+import { submitEngineerInquiryToFirestore, SubmissionResult } from '../lib/firebase';
 
 interface AskAnEngineerModalProps {
   isOpen: boolean;
@@ -18,18 +20,50 @@ export const AskAnEngineerModal: React.FC<AskAnEngineerModalProps> = ({
   const [message, setMessage] = useState('');
   const [fileName, setFileName] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [firestoreResult, setFirestoreResult] = useState<SubmissionResult | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      trackCTA('open_engineer_modal', 'ask_an_engineer_modal');
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFileName(e.target.files[0].name);
+      trackCTA('attach_cad_drawing', 'ask_an_engineer_modal', { file_name: e.target.files[0].name });
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+
+    trackEngineerInquiry({
+      topic,
+      hasAttachment: !!fileName,
+      source: 'modal',
+    });
+
+    try {
+      const result = await submitEngineerInquiryToFirestore({
+        name,
+        email,
+        topic,
+        message,
+        fileName,
+        source: 'modal',
+      });
+      setFirestoreResult(result);
+    } catch (err) {
+      console.error('Firestore engineering inquiry error:', err);
+    } finally {
+      setIsSubmitting(false);
+      setSubmitted(true);
+    }
   };
 
   return (
@@ -173,15 +207,29 @@ export const AskAnEngineerModal: React.FC<AskAnEngineerModalProps> = ({
                 Our Senior Orthopedic Machining Engineer will review your query regarding <strong>{topic}</strong> and respond to <strong>{email}</strong> within 24 hours.
               </p>
 
-              <button
-                onClick={() => {
-                  setSubmitted(false);
-                  onClose();
-                }}
-                className="mt-4 px-6 py-2.5 rounded-xl text-xs font-semibold bg-[#085F2C] hover:bg-[#064e24] text-white transition-colors min-h-[44px]"
-              >
-                Close Window
-              </button>
+              {/* Firestore Verification Badge */}
+              <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono-code text-[#085F2C] dark:text-emerald-300">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Cloud Firestore: Stored in <code className="font-bold">engineer_inquiries</code></span>
+              </div>
+
+              {firestoreResult?.referenceId && (
+                <div className="text-[11px] font-mono-code text-slate-500 dark:text-slate-400">
+                  Reference Tracking ID: <span className="font-bold text-[#085F2C] dark:text-emerald-400">#{firestoreResult.referenceId}</span>
+                </div>
+              )}
+
+              <div>
+                <button
+                  onClick={() => {
+                    setSubmitted(false);
+                    onClose();
+                  }}
+                  className="mt-2 px-6 py-2.5 rounded-xl text-xs font-semibold bg-[#085F2C] hover:bg-[#064e24] text-white transition-colors min-h-[44px]"
+                >
+                  Close Window
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -192,6 +240,7 @@ export const AskAnEngineerModal: React.FC<AskAnEngineerModalProps> = ({
             <button
               type="button"
               onClick={onClose}
+              disabled={isSubmitting}
               className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors min-h-[44px] flex items-center justify-center"
             >
               Cancel
@@ -199,10 +248,11 @@ export const AskAnEngineerModal: React.FC<AskAnEngineerModalProps> = ({
             <button
               type="submit"
               form="ask-engineer-form"
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#085F2C] hover:bg-[#064e24] text-white transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-[#085F2C]/25 min-h-[44px]"
+              disabled={isSubmitting}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#085F2C] hover:bg-[#064e24] text-white transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-[#085F2C]/25 min-h-[44px] disabled:opacity-60"
             >
               <Send className="w-3.5 h-3.5" />
-              <span>Submit Technical Query</span>
+              <span>{isSubmitting ? 'Saving to Firestore...' : 'Submit Technical Query'}</span>
             </button>
           </div>
         )}

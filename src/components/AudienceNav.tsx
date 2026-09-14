@@ -1,6 +1,7 @@
 import React from 'react';
 import { AudienceRole } from '../types';
 import { Stethoscope, Building2, Globe2, Cpu, ArrowRight } from 'lucide-react';
+import { trackCTA } from '../utils/analytics';
 
 interface AudienceNavProps {
   activeRole: AudienceRole;
@@ -80,7 +81,10 @@ export const AudienceNav: React.FC<AudienceNavProps> = ({
               return (
                 <button
                   key={r.id}
-                  onClick={() => onSelectRole(r.id)}
+                  onClick={() => {
+                    trackCTA('select_audience_pathway', 'audience_nav', { pathway: r.id, label: r.label });
+                    onSelectRole(r.id);
+                  }}
                   className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                     isActive
                       ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm'
@@ -102,7 +106,13 @@ export const AudienceNav: React.FC<AudienceNavProps> = ({
               {currentRoleObj.bannerMsg}
             </span>
             <button
-              onClick={currentRoleObj.onAction}
+              onClick={() => {
+                trackCTA('audience_pathway_action', 'audience_nav', {
+                  pathway: currentRoleObj.id,
+                  action: currentRoleObj.actionLabel,
+                });
+                currentRoleObj.onAction();
+              }}
               className="inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#085F2C] hover:bg-[#064e24] text-white transition-colors shadow-sm shrink-0"
             >
               <span>{currentRoleObj.actionLabel}</span>

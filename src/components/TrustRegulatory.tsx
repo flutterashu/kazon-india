@@ -3,6 +3,7 @@ import { TRUST_CERTIFICATIONS, COMPETITOR_BENCHMARKS } from '../data/certificati
 import { TrustCertification } from '../types';
 import { ShieldCheck, CheckCircle2, Award, FileCheck, ExternalLink, X, Scale, Sparkles, Building2, Stamp, Eye } from 'lucide-react';
 import { COMPANY_DATA } from '../data/company';
+import { trackScientificModule, trackCTA } from '../utils/analytics';
 
 interface TrustRegulatoryProps {
   isDarkMode: boolean;
@@ -69,7 +70,14 @@ export const TrustRegulatory: React.FC<TrustRegulatoryProps> = ({ isDarkMode, on
           {TRUST_CERTIFICATIONS.map((cert) => (
             <div
               key={cert.id}
-              onClick={() => setSelectedCert(cert)}
+              onClick={() => {
+                trackScientificModule('regulatory_trust', 'inspect_certificate', {
+                  cert_id: cert.id,
+                  cert_code: cert.code,
+                  cert_title: cert.title,
+                });
+                setSelectedCert(cert);
+              }}
               className={`p-6 rounded-3xl border cursor-pointer group transition-all duration-300 relative flex flex-col justify-between ${
                 isDarkMode
                   ? 'bg-slate-900/80 border-slate-800 hover:border-[#085F2C]/50 hover:shadow-xl hover:shadow-[#085F2C]/10'
@@ -136,7 +144,10 @@ export const TrustRegulatory: React.FC<TrustRegulatoryProps> = ({ isDarkMode, on
               </h3>
             </div>
             <button
-              onClick={onRequestQuote}
+              onClick={() => {
+                trackCTA('request_hospital_sample_kit', 'regulatory_benchmark_table');
+                onRequestQuote();
+              }}
               className="inline-flex items-center px-4 py-2.5 rounded-xl text-xs font-semibold bg-[#085F2C] hover:bg-[#064e24] text-white transition-colors shrink-0 shadow-md shadow-[#085F2C]/20 min-h-[44px]"
             >
               <FileCheck className="w-3.5 h-3.5 mr-1.5" />
@@ -276,6 +287,10 @@ export const TrustRegulatory: React.FC<TrustRegulatoryProps> = ({ isDarkMode, on
                 </button>
                 <button
                   onClick={() => {
+                    trackCTA('request_certified_hospital_dossier', 'certificate_modal', {
+                      cert_id: selectedCert?.id,
+                      cert_code: selectedCert?.code,
+                    });
                     setSelectedCert(null);
                     onRequestQuote();
                   }}

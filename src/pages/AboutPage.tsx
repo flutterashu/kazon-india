@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { SITE_URL } from '../utils/seo';
+import { trackCTA } from '../utils/analytics';
 import { 
   Building2, 
   ShieldCheck, 
@@ -150,6 +151,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ isDarkMode = false }) => {
               <div className="pt-2">
                 <Link
                   to="/contact"
+                  onClick={() => trackCTA('contact_engineering_desk', 'about_page')}
                   className="w-full py-2.5 px-4 rounded-xl bg-[#085F2C] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#064a22] transition-colors flex items-center justify-center space-x-2"
                 >
                   <PhoneCall className="w-3.5 h-3.5" />

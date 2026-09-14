@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MATERIALS_DATA, MATERIAL_COMPARISON_POINTS } from '../data/materials';
 import { Layers, ShieldCheck, Scale, Zap, Info, Check, Sparkles } from 'lucide-react';
+import { trackScientificModule } from '../utils/analytics';
 
 interface MaterialScienceProps {
   isDarkMode: boolean;
@@ -36,7 +37,10 @@ export const MaterialScienceComparator: React.FC<MaterialScienceProps> = ({ isDa
         <div className="flex justify-center mb-10">
           <div className="p-1 rounded-2xl bg-slate-200 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700/80 inline-flex shadow-inner">
             <button
-              onClick={() => setSelectedMaterialId('ti-6al-4v')}
+              onClick={() => {
+                trackScientificModule('material_science_comparator', 'select_alloy', { alloy: 'ti-6al-4v' });
+                setSelectedMaterialId('ti-6al-4v');
+              }}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center space-x-2 min-h-[44px] ${
                 selectedMaterialId === 'ti-6al-4v'
                   ? 'bg-[#085F2C] text-white shadow-md shadow-[#085F2C]/25'
@@ -47,7 +51,10 @@ export const MaterialScienceComparator: React.FC<MaterialScienceProps> = ({ isDa
               <span>Ti-6Al-4V ELI (Grade 23 Titanium)</span>
             </button>
             <button
-              onClick={() => setSelectedMaterialId('ss-316l')}
+              onClick={() => {
+                trackScientificModule('material_science_comparator', 'select_alloy', { alloy: 'ss-316l' });
+                setSelectedMaterialId('ss-316l');
+              }}
               className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center space-x-2 min-h-[44px] ${
                 selectedMaterialId === 'ss-316l'
                   ? 'bg-[#085F2C] text-white shadow-md shadow-[#085F2C]/25'

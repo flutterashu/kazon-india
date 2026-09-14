@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Download, FileText, CheckCircle2, ShieldCheck, Printer } from 'lucide-react';
+import { trackDossierDownload, trackCTA } from '../utils/analytics';
 
 interface TechnicalDocModalProps {
   isOpen: boolean;
@@ -18,7 +19,21 @@ export const TechnicalDocModal: React.FC<TechnicalDocModalProps> = ({
 }) => {
   const [downloaded, setDownloaded] = useState(false);
 
+  useEffect(() => {
+    if (isOpen) {
+      trackCTA('view_technical_dossier_modal', 'technical_doc_modal', {
+        doc_title: title,
+        doc_type: type,
+      });
+    }
+  }, [isOpen, title, type]);
+
   if (!isOpen) return null;
+
+  const handleDownload = () => {
+    trackDossierDownload(title, type);
+    setDownloaded(true);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
@@ -109,7 +124,7 @@ export const TechnicalDocModal: React.FC<TechnicalDocModalProps> = ({
           ) : (
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
               <button
-                onClick={() => setDownloaded(true)}
+                onClick={handleDownload}
                 className="flex-1 py-3 rounded-xl text-xs font-semibold bg-[#085F2C] hover:bg-[#064e24] text-white transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-[#085F2C]/25 min-h-[44px]"
               >
                 <Download className="w-4 h-4" />

@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { Cpu, UploadCloud, Send, CheckCircle2, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SITE_URL } from '../utils/seo';
+import { trackEngineerInquiry, trackCTA } from '../utils/analytics';
+import { submitEngineerInquiryToFirestore, SubmissionResult } from '../lib/firebase';
 
 interface AskEngineerPageProps {
   isDarkMode: boolean;
@@ -17,17 +19,46 @@ export const AskEngineerPage: React.FC<AskEngineerPageProps> = ({ isDarkMode }) 
   const [message, setMessage] = useState('');
   const [fileName, setFileName] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [firestoreResult, setFirestoreResult] = useState<SubmissionResult | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFileName(e.target.files[0].name);
+      trackCTA('attach_cad_drawing', 'ask_engineer_page', { file_name: e.target.files[0].name });
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setIsSubmitting(true);
+
+    trackEngineerInquiry({
+      topic,
+      hasAttachment: !!fileName,
+      company,
+      source: 'dedicated_page',
+    });
+
+    try {
+      const result = await submitEngineerInquiryToFirestore({
+        name,
+        email,
+        phone,
+        company,
+        topic,
+        message,
+        fileName,
+        source: 'dedicated_page',
+      });
+      setFirestoreResult(result);
+    } catch (err) {
+      console.error('Firestore engineering inquiry error:', err);
+    } finally {
+      setIsSubmitting(false);
+      setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const canonicalUrl = `${SITE_URL}/ask-engineer`;
@@ -206,10 +237,11 @@ export const AskEngineerPage: React.FC<AskEngineerPageProps> = ({ isDarkMode }) 
               </Link>
               <button
                 type="submit"
-                className="w-full sm:w-auto px-8 py-3.5 rounded-xl text-xs font-bold bg-[#085F2C] hover:bg-[#064e24] text-white transition-all shadow-lg shadow-[#085F2C]/25 flex items-center justify-center space-x-2 min-h-[44px]"
+                disabled={isSubmitting}
+                className="w-full sm:w-auto px-8 py-3.5 rounded-xl text-xs font-bold bg-[#085F2C] hover:bg-[#064e24] text-white transition-all shadow-lg shadow-[#085F2C]/25 flex items-center justify-center space-x-2 min-h-[44px] disabled:opacity-60"
               >
                 <Send className="w-4 h-4" />
-                <span>Submit Technical Query to Engineering</span>
+                <span>{isSubmitting ? 'Saving to Firestore...' : 'Submit Technical Query to Engineering'}</span>
               </button>
             </div>
           </form>
@@ -233,6 +265,18 @@ export const AskEngineerPage: React.FC<AskEngineerPageProps> = ({ isDarkMode }) 
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-lg mx-auto leading-relaxed">
                 Our Senior Biomedical Machining Engineer at Kazon India Pvt. Ltd. will review your query regarding <strong>{topic}</strong> and contact <strong>{email}</strong> within 24 hours.
               </p>
+
+              {/* Firestore Verification Badge */}
+              <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono-code text-[#085F2C] dark:text-emerald-300">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Cloud Firestore: Stored in <code className="font-bold">engineer_inquiries</code></span>
+              </div>
+
+              {firestoreResult?.referenceId && (
+                <div className="text-xs font-mono-code text-slate-500 dark:text-slate-400 pt-1">
+                  Ticket Reference ID: <span className="font-bold text-[#085F2C] dark:text-emerald-400">#{firestoreResult.referenceId}</span>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">

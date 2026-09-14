@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { OrthopedicProduct } from '../types';
 import { ArrowRight, CheckCircle2, Shield, Activity, Sparkles, Box } from 'lucide-react';
+import { trackScientificModule, trackProductInteraction, trackCTA } from '../utils/analytics';
 
 interface AnatomyExplorerProps {
   products: OrthopedicProduct[];
@@ -208,7 +209,14 @@ export const AnatomyExplorer: React.FC<AnatomyExplorerProps> = ({
                     return (
                       <g
                         key={region.id}
-                        onClick={() => setSelectedRegionId(region.id)}
+                        onClick={() => {
+                          trackScientificModule('anatomy_explorer', 'select_region', {
+                            region_id: region.id,
+                            region_name: region.name,
+                            category: region.category,
+                          });
+                          setSelectedRegionId(region.id);
+                        }}
                         className="cursor-pointer group"
                       >
                         {/* Hit Area */}
@@ -242,7 +250,14 @@ export const AnatomyExplorer: React.FC<AnatomyExplorerProps> = ({
                 {REGIONS.map((region) => (
                   <button
                     key={region.id}
-                    onClick={() => setSelectedRegionId(region.id)}
+                    onClick={() => {
+                      trackScientificModule('anatomy_explorer', 'select_region', {
+                        region_id: region.id,
+                        region_name: region.name,
+                        category: region.category,
+                      });
+                      setSelectedRegionId(region.id);
+                    }}
                     className={`text-left px-2.5 py-2 rounded-lg text-xs font-medium transition-all min-h-[44px] ${
                       selectedRegionId === region.id
                         ? 'bg-[#085F2C] text-white shadow-sm'
@@ -348,7 +363,11 @@ export const AnatomyExplorer: React.FC<AnatomyExplorerProps> = ({
 
                   <div className="flex items-center space-x-2 shrink-0 w-full sm:w-auto">
                     <button
-                      onClick={() => onSelectProduct(matchedProduct)}
+                      onClick={() => {
+                        trackProductInteraction(matchedProduct.id, matchedProduct.name, 'view_details', { source: 'anatomy_explorer' });
+                        trackCTA('view_product_specs', 'anatomy_explorer', { product_id: matchedProduct.id });
+                        onSelectProduct(matchedProduct);
+                      }}
                       className="flex-1 sm:flex-initial inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-xs font-semibold bg-[#085F2C] hover:bg-[#064e24] text-white transition-colors shadow-lg shadow-[#085F2C]/25 min-h-[44px]"
                     >
                       <Box className="w-3.5 h-3.5 mr-1.5" />

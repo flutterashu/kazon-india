@@ -5,6 +5,7 @@ import { OrthopedicProduct, AudienceRole } from './types';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
+import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { QuoteRequestModal } from './components/QuoteRequestModal';
 import { AskAnEngineerModal } from './components/AskAnEngineerModal';
 import { TechnicalDocModal } from './components/TechnicalDocModal';
@@ -55,6 +56,7 @@ export default function App() {
   return (
     <Router>
       <ScrollToTop />
+      <AnalyticsTracker />
       <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-[#085F2C] selection:text-white">
         {/* Persistent Top Navbar */}
         <Navbar

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MANUFACTURING_STEPS } from '../data/manufacturing';
 import { ShieldCheck, Cpu, Sparkles, Droplets, ScanLine, PackageCheck, CheckCircle2, ArrowRight, Gauge, Check } from 'lucide-react';
+import { trackScientificModule } from '../utils/analytics';
 
 interface ManufacturingLifecycleProps {
   isDarkMode: boolean;
@@ -57,7 +58,13 @@ export const ManufacturingLifecycle: React.FC<ManufacturingLifecycleProps> = ({ 
               return (
                 <button
                   key={step.stepNumber}
-                  onClick={() => setActiveStepIndex(idx)}
+                  onClick={() => {
+                    trackScientificModule('manufacturing_lifecycle', 'select_stage', {
+                      step_number: step.stepNumber,
+                      step_title: step.title,
+                    });
+                    setActiveStepIndex(idx);
+                  }}
                   className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all min-h-[44px] ${
                     isActive
                       ? 'bg-[#085F2C] text-white shadow-lg shadow-[#085F2C]/25 scale-105 ring-2 ring-emerald-400/50'
@@ -192,13 +199,21 @@ export const ManufacturingLifecycle: React.FC<ManufacturingLifecycleProps> = ({ 
 
                   <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
                     <button
-                      onClick={() => setActiveStepIndex((prev) => (prev > 0 ? prev - 1 : 6))}
+                      onClick={() => {
+                        const newIdx = activeStepIndex > 0 ? activeStepIndex - 1 : 6;
+                        trackScientificModule('manufacturing_lifecycle', 'prev_stage', { to_stage: newIdx + 1 });
+                        setActiveStepIndex(newIdx);
+                      }}
                       className="text-xs text-slate-400 hover:text-white transition-colors"
                     >
                       ← Previous Stage
                     </button>
                     <button
-                      onClick={() => setActiveStepIndex((prev) => (prev < 6 ? prev + 1 : 0))}
+                      onClick={() => {
+                        const newIdx = activeStepIndex < 6 ? activeStepIndex + 1 : 0;
+                        trackScientificModule('manufacturing_lifecycle', 'next_stage', { to_stage: newIdx + 1 });
+                        setActiveStepIndex(newIdx);
+                      }}
                       className="text-xs text-emerald-400 font-semibold hover:text-emerald-300 flex items-center transition-colors min-h-[44px]"
                     >
                       Next Stage <ArrowRight className="w-3.5 h-3.5 ml-1" />

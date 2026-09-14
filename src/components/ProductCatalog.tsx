@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { OrthopedicProduct } from '../types';
 import { Box, Download, ShieldCheck, Check, ArrowRight, Filter, Layers, FileText, CheckCircle2, Search, X } from 'lucide-react';
 import { slugifyCategory } from '../utils/seo';
+import { trackCTA, trackCatalogFilter, trackProductInteraction, trackDossierDownload } from '../utils/analytics';
 
 interface ProductCatalogProps {
   products: OrthopedicProduct[];
@@ -63,6 +64,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   }, [products, searchQuery, activeFamily, activeAnatomyFilter, activeMaterialFilter]);
 
   const handleResetFilters = () => {
+    trackCatalogFilter('reset', 'all');
     setSearchQuery('');
     setActiveFamily('All');
     setActiveAnatomyFilter('All');
@@ -114,7 +116,11 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <span className="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">Anatomy:</span>
               <select
                 value={activeAnatomyFilter}
-                onChange={(e) => setActiveAnatomyFilter(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  trackCatalogFilter('anatomy', val);
+                  setActiveAnatomyFilter(val);
+                }}
                 className="w-full md:w-44 px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-[#085F2C] focus:outline-none min-h-[44px]"
               >
                 {anatomies.map((anat) => (
@@ -130,7 +136,11 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <span className="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">Alloy:</span>
               <select
                 value={activeMaterialFilter}
-                onChange={(e) => setActiveMaterialFilter(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  trackCatalogFilter('material', val);
+                  setActiveMaterialFilter(val);
+                }}
                 className="w-full md:w-40 px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-[#085F2C] focus:outline-none min-h-[44px]"
               >
                 <option value="All">All Metallurgy</option>
@@ -145,7 +155,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             {families.map((fam) => (
               <button
                 key={fam}
-                onClick={() => setActiveFamily(fam)}
+                onClick={() => {
+                  trackCatalogFilter('family', fam);
+                  setActiveFamily(fam);
+                }}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all min-h-[36px] ${
                   activeFamily === fam
                     ? 'bg-[#085F2C] text-white shadow-md shadow-[#085F2C]/25'
@@ -204,6 +217,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                     <h3 className="text-base sm:text-lg font-bold font-tech text-slate-900 dark:text-white mb-2 line-clamp-1">
                       <Link
                         to={`/products/${product.id}`}
+                        onClick={() => trackProductInteraction(product.id, product.name, 'view_details', { source: 'catalog_card_title' })}
                         className="hover:text-[#085F2C] dark:hover:text-emerald-400 transition-colors"
                       >
                         {product.name}
@@ -237,6 +251,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                   <div className="p-4 px-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 bg-slate-50/50 dark:bg-slate-900/50">
                     <button
                       onClick={() => {
+                        trackProductInteraction(product.id, product.name, 'view_details', { source: 'catalog_inspect_3d' });
                         onSelectProduct(product);
                         const el = document.getElementById('implant-3d-inspector');
                         if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -248,7 +263,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                     </button>
 
                     <button
-                      onClick={() => onRequestQuoteForProduct(product)}
+                      onClick={() => {
+                        trackCTA('request_rfq', 'product_catalog_card', {
+                          product_id: product.id,
+                          product_name: product.name,
+                        });
+                        onRequestQuoteForProduct(product);
+                      }}
                       className="flex-1 inline-flex items-center justify-center px-3 py-2.5 rounded-xl text-xs font-semibold bg-[#085F2C] hover:bg-[#064e24] text-white transition-colors shadow-sm min-h-[44px]"
                     >
                       Request RFQ
@@ -306,7 +327,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             </div>
 
             <button
-              onClick={() => onRequestQuoteForProduct(selectedProduct)}
+              onClick={() => {
+                trackCTA('request_clinical_evaluation_kit', 'product_dossier_inspector', {
+                  product_id: selectedProduct.id,
+                  product_name: selectedProduct.name,
+                });
+                onRequestQuoteForProduct(selectedProduct);
+              }}
               className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#085F2C] hover:bg-[#064e24] text-white transition-colors shrink-0 shadow-lg shadow-[#085F2C]/25 min-h-[44px]"
             >
               Request Clinical Evaluation Kit
@@ -316,7 +343,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
           {/* Dossier Tabs */}
           <div className="flex border-b border-slate-200 dark:border-slate-800 px-6 sm:px-8 space-x-6 overflow-x-auto text-xs font-semibold">
             <button
-              onClick={() => setActiveTab('specs')}
+              onClick={() => {
+                trackProductInteraction(selectedProduct.id, selectedProduct.name, 'switch_tab', { tab: 'specs' });
+                setActiveTab('specs');
+              }}
               className={`py-3.5 border-b-2 transition-colors whitespace-nowrap min-h-[44px] ${
                 activeTab === 'specs'
                   ? 'border-[#085F2C] text-[#085F2C] dark:text-emerald-400'
@@ -326,7 +356,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               Dimensional Specifications & Tolerances
             </button>
             <button
-              onClick={() => setActiveTab('features')}
+              onClick={() => {
+                trackProductInteraction(selectedProduct.id, selectedProduct.name, 'switch_tab', { tab: 'features' });
+                setActiveTab('features');
+              }}
               className={`py-3.5 border-b-2 transition-colors whitespace-nowrap min-h-[44px] ${
                 activeTab === 'features'
                   ? 'border-[#085F2C] text-[#085F2C] dark:text-emerald-400'
@@ -336,7 +369,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               Key Features & Biomechanics
             </button>
             <button
-              onClick={() => setActiveTab('clinical')}
+              onClick={() => {
+                trackProductInteraction(selectedProduct.id, selectedProduct.name, 'switch_tab', { tab: 'clinical' });
+                setActiveTab('clinical');
+              }}
               className={`py-3.5 border-b-2 transition-colors whitespace-nowrap min-h-[44px] ${
                 activeTab === 'clinical'
                   ? 'border-[#085F2C] text-[#085F2C] dark:text-emerald-400'
@@ -346,7 +382,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               Indications & Surgical Benefits
             </button>
             <button
-              onClick={() => setActiveTab('downloads')}
+              onClick={() => {
+                trackProductInteraction(selectedProduct.id, selectedProduct.name, 'switch_tab', { tab: 'downloads' });
+                setActiveTab('downloads');
+              }}
               className={`py-3.5 border-b-2 transition-colors whitespace-nowrap min-h-[44px] ${
                 activeTab === 'downloads'
                   ? 'border-[#085F2C] text-[#085F2C] dark:text-emerald-400'
@@ -469,7 +508,15 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                     </div>
 
                     <button
-                      onClick={() => onOpenDocModal(doc.title, doc.type)}
+                      onClick={() => {
+                        trackDossierDownload(doc.title, doc.type, selectedProduct.id);
+                        trackCTA('download_dossier_modal', 'catalog_downloads_tab', {
+                          doc_title: doc.title,
+                          doc_type: doc.type,
+                          product_id: selectedProduct.id,
+                        });
+                        onOpenDocModal(doc.title, doc.type);
+                      }}
                       className="p-2 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-[#085F2C] dark:hover:text-emerald-400 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                       title="Download file"
                     >

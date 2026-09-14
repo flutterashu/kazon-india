@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { PRODUCTS } from '../data/products';
 import { OrthopedicProduct } from '../types';
 import { getCategoryBySlug, CATEGORIES, SITE_URL } from '../utils/seo';
+import { trackCTA, trackProductInteraction } from '../utils/analytics';
 import { 
   Layers, 
   ChevronRight, 
@@ -198,6 +199,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
               <div className="pt-2 flex items-center space-x-2">
                 <Link
                   to={`/products/${prod.id}`}
+                  onClick={() => trackProductInteraction(prod.id, prod.name, 'view_details', { source: 'category_page_card' })}
                   className="flex-1 py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors"
                 >
                   <Box className="w-3.5 h-3.5 text-[#085F2C]" />
@@ -205,7 +207,13 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
                 </Link>
 
                 <button
-                  onClick={() => onOpenQuoteModal(prod)}
+                  onClick={() => {
+                    trackCTA('request_rfq', 'category_page_card', {
+                      product_id: prod.id,
+                      product_name: prod.name,
+                    });
+                    onOpenQuoteModal(prod);
+                  }}
                   className="py-2 px-3 rounded-xl bg-[#085F2C] text-white hover:bg-[#064a22] text-xs font-semibold flex items-center justify-center space-x-1 transition-colors"
                   title="Request Quote"
                 >

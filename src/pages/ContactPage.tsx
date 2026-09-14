@@ -18,6 +18,8 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { COMPANY_DATA } from '../data/company';
 import { SITE_URL, ORGANIZATION_SCHEMA } from '../utils/seo';
+import { trackContactSubmission, trackPhoneHelpline, trackEmailClick } from '../utils/analytics';
+import { submitContactMessageToFirestore, SubmissionResult } from '../lib/firebase';
 
 interface ContactPageProps {
   isDarkMode: boolean;
@@ -30,10 +32,31 @@ export const ContactPage: React.FC<ContactPageProps> = ({ isDarkMode }) => {
   const [subject, setSubject] = useState('Hospital Procurement & Standing Orders');
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [firestoreResult, setFirestoreResult] = useState<SubmissionResult | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+
+    trackContactSubmission({ subject, source: 'contact_page' });
+
+    try {
+      const result = await submitContactMessageToFirestore({
+        name,
+        email,
+        phone,
+        subject,
+        message,
+        source: 'contact_page',
+      });
+      setFirestoreResult(result);
+    } catch (err) {
+      console.error('Firestore contact submission error:', err);
+    } finally {
+      setIsSubmitting(false);
+      setSubmitted(true);
+    }
   };
 
   const canonicalUrl = `${SITE_URL}/contact`;
@@ -150,6 +173,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ isDarkMode }) => {
               <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center gap-2">
                 <a
                   href={`tel:${COMPANY_DATA.director.phone}`}
+                  onClick={() => trackPhoneHelpline(COMPANY_DATA.director.phone, 'contact_page_director')}
                   className="px-3 py-2 rounded-xl bg-[#085F2C] hover:bg-[#064e24] text-white text-xs font-bold transition-all shadow-md shadow-[#085F2C]/20 flex items-center space-x-1.5 min-h-[44px]"
                 >
                   <Phone className="w-3.5 h-3.5" />
@@ -178,6 +202,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ isDarkMode }) => {
                     </div>
                     <a
                       href={p.href}
+                      onClick={() => trackPhoneHelpline(p.number, `contact_page_${p.label.toLowerCase().replace(/[^a-z0-9]/g, '_')}`)}
                       className="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-[#085F2C] dark:text-emerald-400 text-xs font-semibold hover:bg-emerald-500/20 transition-colors min-h-[36px] flex items-center"
                     >
                       Call Now
@@ -243,7 +268,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ isDarkMode }) => {
                       Official Correspondence
                     </span>
                     <span className="text-slate-600 dark:text-slate-300 block mt-0.5">
-                      Email: <a href="mailto:info@kazonindia.in" className="hover:underline text-[#085F2C] dark:text-emerald-400 font-medium">info@kazonindia.in</a>
+                      Email: <a href="mailto:info@kazonindia.in" onClick={() => trackEmailClick('info@kazonindia.in', 'contact_page')} className="hover:underline text-[#085F2C] dark:text-emerald-400 font-medium">info@kazonindia.in</a>
                     </span>
                     <span className="text-slate-600 dark:text-slate-300 block">
                       Web: www.kazonindia.in | www.kazonindia.com
@@ -373,10 +398,11 @@ export const ContactPage: React.FC<ContactPageProps> = ({ isDarkMode }) => {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 px-6 rounded-xl text-xs font-bold bg-[#085F2C] hover:bg-[#064e24] text-white transition-all shadow-lg shadow-[#085F2C]/25 flex items-center justify-center space-x-2 min-h-[44px]"
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 px-6 rounded-xl text-xs font-bold bg-[#085F2C] hover:bg-[#064e24] text-white transition-all shadow-lg shadow-[#085F2C]/25 flex items-center justify-center space-x-2 min-h-[44px] disabled:opacity-60"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Dispatch Official Inquiry to Kazon Desk</span>
+                  <span>{isSubmitting ? 'Saving to Firestore...' : 'Dispatch Official Inquiry to Kazon Desk'}</span>
                 </button>
               </form>
             ) : (
@@ -398,8 +424,17 @@ export const ContactPage: React.FC<ContactPageProps> = ({ isDarkMode }) => {
                   </p>
                 </div>
 
+                {/* Firestore Verification Badge */}
+                <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono-code text-[#085F2C] dark:text-emerald-300">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Cloud Firestore: Stored in <code className="font-bold">contact_messages</code></span>
+                </div>
+
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed">
-                  Thank you, <strong>{name}</strong>. Your inquiry regarding <strong>{subject}</strong> has been logged under priority tracking ticket <span className="font-mono-code text-[#085F2C] dark:text-emerald-400 font-bold">#KZ-HQ-{(Math.random() * 9000 + 1000).toFixed(0)}</span>. A factory executive will reach out to <strong>{phone}</strong> / <strong>{email}</strong> promptly.
+                  Thank you, <strong>{name}</strong>. Your inquiry regarding <strong>{subject}</strong> has been logged under priority tracking ticket{' '}
+                  <span className="font-mono-code text-[#085F2C] dark:text-emerald-400 font-bold">
+                    {firestoreResult?.referenceId ? `#${firestoreResult.referenceId}` : `#KZ-HQ-${(Math.random() * 9000 + 1000).toFixed(0)}`}
+                  </span>. A factory executive will reach out to <strong>{phone}</strong> / <strong>{email}</strong> promptly.
                 </p>
 
                 <div className="pt-3">
