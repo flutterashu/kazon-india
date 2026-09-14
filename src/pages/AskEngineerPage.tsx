@@ -241,7 +241,7 @@ export const AskEngineerPage: React.FC<AskEngineerPageProps> = ({ isDarkMode }) 
                 className="w-full sm:w-auto px-8 py-3.5 rounded-xl text-xs font-bold bg-[#085F2C] hover:bg-[#064e24] text-white transition-all shadow-lg shadow-[#085F2C]/25 flex items-center justify-center space-x-2 min-h-[44px] disabled:opacity-60"
               >
                 <Send className="w-4 h-4" />
-                <span>{isSubmitting ? 'Saving to Firestore...' : 'Submit Technical Query to Engineering'}</span>
+                <span>{isSubmitting ? 'Transmitting Technical Query to Engineering...' : 'Submit Technical Query to Engineering'}</span>
               </button>
             </div>
           </form>
@@ -266,15 +266,15 @@ export const AskEngineerPage: React.FC<AskEngineerPageProps> = ({ isDarkMode }) 
                 Our Senior Biomedical Machining Engineer at Kazon India Pvt. Ltd. will review your query regarding <strong>{topic}</strong> and contact <strong>{email}</strong> within 24 hours.
               </p>
 
-              {/* Firestore Verification Badge */}
+              {/* Official Verification Badge */}
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono-code text-[#085F2C] dark:text-emerald-300">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Cloud Firestore: Stored in <code className="font-bold">engineer_inquiries</code></span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>Engineering Consultation Docket Registered</span>
               </div>
 
               {firestoreResult?.referenceId && (
                 <div className="text-xs font-mono-code text-slate-500 dark:text-slate-400 pt-1">
-                  Ticket Reference ID: <span className="font-bold text-[#085F2C] dark:text-emerald-400">#{firestoreResult.referenceId}</span>
+                  Consultation Ticket ID: <span className="font-bold text-[#085F2C] dark:text-emerald-400">#{firestoreResult.referenceId}</span>
                 </div>
               )}
             </div>

@@ -402,7 +402,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ isDarkMode }) => {
                   className="w-full py-3.5 px-6 rounded-xl text-xs font-bold bg-[#085F2C] hover:bg-[#064e24] text-white transition-all shadow-lg shadow-[#085F2C]/25 flex items-center justify-center space-x-2 min-h-[44px] disabled:opacity-60"
                 >
                   <Send className="w-4 h-4" />
-                  <span>{isSubmitting ? 'Saving to Firestore...' : 'Dispatch Official Inquiry to Kazon Desk'}</span>
+                  <span>{isSubmitting ? 'Transmitting Official Inquiry...' : 'Dispatch Official Inquiry to Kazon Desk'}</span>
                 </button>
               </form>
             ) : (
@@ -424,10 +424,10 @@ export const ContactPage: React.FC<ContactPageProps> = ({ isDarkMode }) => {
                   </p>
                 </div>
 
-                {/* Firestore Verification Badge */}
+                {/* Official Verification Badge */}
                 <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono-code text-[#085F2C] dark:text-emerald-300">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Cloud Firestore: Stored in <code className="font-bold">contact_messages</code></span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span>Verified Official Manufacturing Dispatch Logged</span>
                 </div>
 
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed">

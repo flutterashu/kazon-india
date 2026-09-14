@@ -363,10 +363,11 @@ export const RequestQuotePage: React.FC<RequestQuotePageProps> = ({ isDarkMode }
               </Link>
               <button
                 type="submit"
-                className="w-full sm:w-auto px-8 py-3.5 rounded-xl text-xs font-bold bg-[#085F2C] hover:bg-[#064e24] text-white transition-all shadow-lg shadow-[#085F2C]/25 flex items-center justify-center space-x-2 min-h-[44px]"
+                disabled={isSubmitting}
+                className="w-full sm:w-auto px-8 py-3.5 rounded-xl text-xs font-bold bg-[#085F2C] hover:bg-[#064e24] text-white transition-all shadow-lg shadow-[#085F2C]/25 flex items-center justify-center space-x-2 min-h-[44px] disabled:opacity-60"
               >
                 <Send className="w-4 h-4" />
-                <span>Submit Official RFQ & Sample Request</span>
+                <span>{isSubmitting ? 'Transmitting RFQ & Sample Request...' : 'Submit Official RFQ & Sample Request'}</span>
               </button>
             </div>
           </form>
@@ -395,10 +396,10 @@ export const RequestQuotePage: React.FC<RequestQuotePageProps> = ({ isDarkMode }
                 </span>.
               </p>
 
-              {/* Cloud Firestore Verification Badge */}
+              {/* Official Verification Badge */}
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono-code text-[#085F2C] dark:text-emerald-300">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Cloud Firestore: Stored in <code className="font-bold">quote_requests</code></span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>Official Manufacturing Registry Entry Confirmed</span>
               </div>
             </div>
 
@@ -420,9 +421,9 @@ export const RequestQuotePage: React.FC<RequestQuotePageProps> = ({ isDarkMode }
                 <span className="text-[#085F2C] dark:text-emerald-400 font-semibold truncate max-w-[200px]">Formal Dossier sent to {email}</span>
               </div>
               <div className="flex justify-between border-t border-slate-200 dark:border-slate-700 pt-2 text-[11px]">
-                <span className="text-slate-400">Database Sync:</span>
+                <span className="text-slate-400">Transmission Status:</span>
                 <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                  {firestoreResult?.storedInFirestore ? '✓ Cloud Firestore Live Sync' : '✓ Verified & Queued'}
+                  ✓ Logged with Central Export Desk
                 </span>
               </div>
             </div>

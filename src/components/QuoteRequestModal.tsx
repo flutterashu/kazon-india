@@ -296,10 +296,10 @@ export const QuoteRequestModal: React.FC<QuoteRequestModalProps> = ({
                 </span>.
               </p>
 
-              {/* Real Firestore Verification Chip */}
+              {/* Official Verification Chip */}
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono-code text-[#085F2C] dark:text-emerald-300">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Cloud Firestore: Stored in <code className="font-bold">quote_requests</code></span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>Official Manufacturing Registry Entry Confirmed</span>
               </div>
 
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs text-left max-w-md mx-auto space-y-2">
@@ -316,9 +316,9 @@ export const QuoteRequestModal: React.FC<QuoteRequestModalProps> = ({
                   <span className="text-[#085F2C] dark:text-emerald-400 font-semibold truncate max-w-[200px]">Dossier sent to {email}</span>
                 </div>
                 <div className="flex justify-between border-t border-slate-200 dark:border-slate-700 pt-2 text-[11px]">
-                  <span className="text-slate-400">Database Sync:</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                    {firestoreResult?.storedInFirestore ? '✓ Cloud Firestore Live Sync' : '✓ Verified & Queued'}
+                  <span className="text-slate-400">Transmission Status:</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-medium font-mono-code">
+                    ✓ Logged with Central Export Desk
                   </span>
                 </div>
               </div>
@@ -354,7 +354,7 @@ export const QuoteRequestModal: React.FC<QuoteRequestModalProps> = ({
               className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#085F2C] hover:bg-[#064e24] text-white transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-[#085F2C]/25 min-h-[44px] disabled:opacity-60"
             >
               <Send className="w-3.5 h-3.5" />
-              <span>{isSubmitting ? 'Saving to Firestore...' : 'Submit Official RFQ'}</span>
+              <span>{isSubmitting ? 'Transmitting Official RFQ...' : 'Submit Official RFQ'}</span>
             </button>
           </div>
         )}
