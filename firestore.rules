@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Allow public creation of Quote Requests / RFQ submissions
+    // Reading, updating, and deleting are restricted to administrators via Firebase Console
+    match /quote_requests/{docId} {
+      allow create: if request.resource.data.email is string 
+                    && request.resource.data.name is string;
+      allow read, update, delete: if false;
+    }
+
+    // Allow public creation of Engineering & CAD Consult inquiries
+    match /engineer_inquiries/{docId} {
+      allow create: if request.resource.data.email is string 
+                    && request.resource.data.topic is string;
+      allow read, update, delete: if false;
+    }
+
+    // Allow public creation of General Contact & Procurement messages
+    match /contact_messages/{docId} {
+      allow create: if request.resource.data.email is string 
+                    && request.resource.data.message is string;
+      allow read, update, delete: if false;
+    }
+
+    // Default deny for all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

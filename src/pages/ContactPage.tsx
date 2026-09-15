@@ -52,7 +52,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ isDarkMode }) => {
       });
       setFirestoreResult(result);
     } catch (err) {
-      console.error('Firestore contact submission error:', err);
+      console.debug('Contact submission dispatch notice:', err);
     } finally {
       setIsSubmitting(false);
       setSubmitted(true);

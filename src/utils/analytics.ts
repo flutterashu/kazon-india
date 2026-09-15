@@ -3,7 +3,7 @@
  * Enterprise Analytics & Tag Manager Dispatcher (GA4, GTM dataLayer & Custom Medical B2B Events)
  */
 
-import { logFirebaseEvent } from '../lib/firebase';
+import { logFirebaseEvent, firebaseConfig } from '../lib/firebase';
 
 declare global {
   interface Window {
@@ -17,8 +17,11 @@ declare global {
   }
 }
 
-// Read Measurement ID from environment or fallback
-const GA_MEASUREMENT_ID = (import.meta.env.VITE_GA_MEASUREMENT_ID as string) || '';
+// Read Measurement ID from environment or fallback to Firebase Config (G-CRRZLDBC2H)
+export const GA_MEASUREMENT_ID = 
+  (import.meta.env.VITE_GA_MEASUREMENT_ID as string) || 
+  firebaseConfig.measurementId || 
+  'G-CRRZLDBC2H';
 
 let isInitialized = false;
 
@@ -47,7 +50,12 @@ export function initAnalytics(): void {
 
       window.gtag('js', new Date());
       window.gtag('config', GA_MEASUREMENT_ID, {
-        send_page_view: false, // Page views are tracked explicitly on route transitions
+        send_page_view: true,
+      });
+    } else {
+      // Configure existing gtag from index.html if present
+      window.gtag('config', GA_MEASUREMENT_ID, {
+        send_page_view: true,
       });
     }
   }

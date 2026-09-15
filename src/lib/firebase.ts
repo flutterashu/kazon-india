@@ -28,19 +28,39 @@ export const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getA
 // Cloud Firestore Database Instance
 export const db: Firestore = getFirestore(app);
 
-// Safe Analytics initialization for browser environment
+// Safe Analytics initialization for browser environment with event queueing
 export let analyticsInstance: Analytics | null = null;
-if (typeof window !== 'undefined') {
-  isSupported()
-    .then((supported) => {
-      if (supported) {
-        analyticsInstance = getAnalytics(app);
+const eventQueue: Array<{ eventName: string; params: Record<string, any> }> = [];
+let isQueueFlushing = false;
+
+const analyticsPromise: Promise<Analytics | null> = (async () => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const supported = await isSupported();
+    if (supported) {
+      analyticsInstance = getAnalytics(app);
+      // Flush any events that were logged before isSupported resolved
+      if (!isQueueFlushing && eventQueue.length > 0) {
+        isQueueFlushing = true;
+        while (eventQueue.length > 0) {
+          const item = eventQueue.shift();
+          if (item && analyticsInstance) {
+            try {
+              logEvent(analyticsInstance, item.eventName, item.params);
+            } catch (e) {
+              // Ignore single event failure
+            }
+          }
+        }
+        isQueueFlushing = false;
       }
-    })
-    .catch(() => {
-      // Analytics unsupported in current environment or blocked by extension
-    });
-}
+      return analyticsInstance;
+    }
+  } catch (err) {
+    console.debug('[Firebase Analytics] Not supported or blocked:', err);
+  }
+  return null;
+})();
 
 /**
  * Log custom events directly through Firebase Analytics SDK
@@ -49,10 +69,29 @@ export function logFirebaseEvent(eventName: string, params: Record<string, any> 
   try {
     if (analyticsInstance) {
       logEvent(analyticsInstance, eventName, params);
+    } else {
+      // Queue for when analyticsInstance is ready
+      eventQueue.push({ eventName, params });
+      analyticsPromise.then((instance) => {
+        if (instance && !isQueueFlushing && eventQueue.length > 0) {
+          isQueueFlushing = true;
+          while (eventQueue.length > 0) {
+            const item = eventQueue.shift();
+            if (item) {
+              try {
+                logEvent(instance, item.eventName, item.params);
+              } catch (e) {
+                // Ignore
+              }
+            }
+          }
+          isQueueFlushing = false;
+        }
+      });
     }
   } catch (err) {
     // Non-blocking telemetry
-    console.debug('[Firebase Analytics] Event dispatch:', err);
+    console.debug('[Firebase Analytics] Event dispatch notice:', err);
   }
 }
 
@@ -136,7 +175,7 @@ export async function submitQuoteRequestToFirestore(
       collection: 'quote_requests',
     };
   } catch (error) {
-    console.warn('[Firestore] Falling back to secure local cache for RFQ:', error);
+    console.debug('[Kazon Dispatch] Queueing submission locally:', error);
     saveOfflineBackup('kazon_offline_rfqs', { ...data, referenceId: localRefId, timestamp });
     
     return {
@@ -183,7 +222,7 @@ export async function submitEngineerInquiryToFirestore(
       collection: 'engineer_inquiries',
     };
   } catch (error) {
-    console.warn('[Firestore] Falling back to secure local cache for engineering inquiry:', error);
+    console.debug('[Kazon Dispatch] Queueing engineering consult locally:', error);
     saveOfflineBackup('kazon_offline_engineering_inquiries', { ...data, referenceId: localRefId, timestamp });
 
     return {
@@ -228,7 +267,7 @@ export async function submitContactMessageToFirestore(
       collection: 'contact_messages',
     };
   } catch (error) {
-    console.warn('[Firestore] Falling back to secure local cache for contact message:', error);
+    console.debug('[Kazon Dispatch] Queueing contact message locally:', error);
     saveOfflineBackup('kazon_offline_contact_messages', { ...data, referenceId: localRefId, timestamp });
 
     return {

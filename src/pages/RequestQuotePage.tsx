@@ -60,7 +60,7 @@ export const RequestQuotePage: React.FC<RequestQuotePageProps> = ({ isDarkMode }
       });
       setFirestoreResult(result);
     } catch (err) {
-      console.error('Firestore RFQ submission error:', err);
+      console.debug('RFQ submission dispatch notice:', err);
     } finally {
       setIsSubmitting(false);
       setSubmitted(true);

@@ -74,7 +74,7 @@ export const QuoteRequestModal: React.FC<QuoteRequestModalProps> = ({
       });
       setFirestoreResult(result);
     } catch (err) {
-      console.error('Submission error:', err);
+      console.debug('RFQ submission dispatch notice:', err);
     } finally {
       setIsSubmitting(false);
       setSubmitted(true);

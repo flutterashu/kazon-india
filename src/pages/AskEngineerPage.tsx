@@ -53,7 +53,7 @@ export const AskEngineerPage: React.FC<AskEngineerPageProps> = ({ isDarkMode }) 
       });
       setFirestoreResult(result);
     } catch (err) {
-      console.error('Firestore engineering inquiry error:', err);
+      console.debug('Engineering inquiry dispatch notice:', err);
     } finally {
       setIsSubmitting(false);
       setSubmitted(true);

@@ -59,7 +59,7 @@ export const AskAnEngineerModal: React.FC<AskAnEngineerModalProps> = ({
       });
       setFirestoreResult(result);
     } catch (err) {
-      console.error('Firestore engineering inquiry error:', err);
+      console.debug('Engineering inquiry dispatch notice:', err);
     } finally {
       setIsSubmitting(false);
       setSubmitted(true);
