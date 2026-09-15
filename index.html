@@ -26,7 +26,279 @@
     <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="initial-loader" role="status" aria-label="Initializing Kazon Surgical Interface">
+        <style>
+          #initial-loader {
+            position: fixed;
+            inset: 0;
+            background-color: #080d12;
+            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            z-index: 99999;
+            overflow: hidden;
+            background-image: 
+              linear-gradient(rgba(16, 185, 129, 0.04) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+          }
+
+          .loader-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1100px;
+          }
+
+          .loader-status {
+            font-family: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #10b981;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.9;
+          }
+
+          .loader-status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulseDot 1.4s ease-in-out infinite;
+          }
+
+          .loader-main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            text-align: center;
+            padding: 20px 0;
+          }
+
+          /* Precision Metrology Scanner Chamber */
+          .implant-scanner {
+            position: relative;
+            width: 130px;
+            height: 170px;
+            margin-bottom: 28px;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            background: radial-gradient(circle at center, rgba(16, 185, 129, 0.08) 0%, rgba(8, 13, 18, 0.8) 75%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.1), inset 0 0 20px rgba(16, 185, 129, 0.05);
+          }
+
+          /* Corner Crosshair Reticles */
+          .implant-scanner::before,
+          .implant-scanner::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-color: #10b981;
+            pointer-events: none;
+          }
+          .implant-scanner::before {
+            top: 4px;
+            left: 4px;
+            border-top: 2px solid #10b981;
+            border-left: 2px solid #10b981;
+          }
+          .implant-scanner::after {
+            bottom: 4px;
+            right: 4px;
+            border-bottom: 2px solid #10b981;
+            border-right: 2px solid #10b981;
+          }
+
+          /* Anatomical Bone Plate Wireframe */
+          .wireframe-implant {
+            width: 34px;
+            height: 130px;
+            border: 2px solid rgba(16, 185, 129, 0.5);
+            border-radius: 17px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            background: rgba(16, 185, 129, 0.03);
+          }
+
+          /* Dynamic Compression Screw Holes */
+          .implant-hole {
+            width: 14px;
+            height: 14px;
+            border: 2px solid #10b981;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.15);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+            position: relative;
+          }
+          .implant-hole::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            background-color: #080d12;
+          }
+
+          /* Precision Metrology Laser Line */
+          .laser-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #34d399 20%, #10b981 50%, #34d399 80%, transparent);
+            box-shadow: 0 0 14px #10b981, 0 0 24px rgba(16, 185, 129, 0.8);
+            animation: scanLaser 2.2s ease-in-out infinite alternate;
+          }
+
+          .brand-title {
+            font-size: clamp(22px, 5vw, 30px);
+            font-weight: 800;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin-bottom: 6px;
+            text-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+          }
+
+          .brand-title span {
+            color: #10b981;
+          }
+
+          .brand-tagline {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #94a3b8;
+            max-width: 460px;
+            line-height: 1.5;
+          }
+
+          .loader-footer {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .progress-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            height: 3px;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 12px;
+          }
+
+          .progress-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #10b981, #34d399, transparent);
+            transform: translateX(-100%);
+            animation: progressSweep 1.6s ease-in-out infinite;
+          }
+
+          .boot-logs {
+            font-family: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            color: #64748b;
+            height: 18px;
+            letter-spacing: 0.5px;
+            text-align: center;
+          }
+
+          .boot-logs::after {
+            content: "CALIBRATING OPTICAL METROLOGY SYSTEM...";
+            animation: cycleDiagnostics 6s steps(1) infinite;
+          }
+
+          @keyframes scanLaser {
+            0% { top: 6%; opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { top: 92%; opacity: 0.4; }
+          }
+
+          @keyframes progressSweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+          }
+
+          @keyframes pulseDot {
+            0%, 100% { opacity: 0.3; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.15); }
+          }
+
+          @keyframes cycleDiagnostics {
+            0% { content: "CALIBRATING OPTICAL METROLOGY SYSTEM..."; color: #10b981; }
+            25% { content: "[OK] TITANIUM Ti-6Al-4V ELI (ASTM F136) VERIFIED"; color: #94a3b8; }
+            50% { content: "[OK] 5-AXIS CNC COMPRESSION GEOMETRIES MOUNTED"; color: #94a3b8; }
+            75% { content: "[OK] ISO 13485:2016 & CDSCO CLASS-C AUDIT PASSED"; color: #94a3b8; }
+            90% { content: "SURGICAL INTERFACE READY. INITIALIZING..."; color: #34d399; }
+          }
+
+          @media (max-width: 640px) {
+            .loader-status.right-status {
+              display: none;
+            }
+          }
+        </style>
+
+        <!-- Header Status Block -->
+        <header class="loader-header">
+          <div class="loader-status">
+            <span class="loader-status-dot"></span>
+            <span>KAZON METROLOGY // ISO 13485:2016</span>
+          </div>
+          <div class="loader-status right-status" style="color: #64748b;">
+            CLEANROOM OPTICAL INSPECTION
+          </div>
+        </header>
+
+        <!-- Center Interactive Wireframe & Logo -->
+        <main class="loader-main">
+          <div class="implant-scanner">
+            <div class="laser-line"></div>
+            <div class="wireframe-implant">
+              <div class="implant-hole"></div>
+              <div class="implant-hole"></div>
+              <div class="implant-hole"></div>
+            </div>
+          </div>
+          <h1 class="brand-title">KAZON <span>INDIA</span></h1>
+          <p class="brand-tagline">Precision Orthopedic Implants & Surgical Innovation</p>
+        </main>
+
+        <!-- Bottom Progress & Diagnostic Logs -->
+        <footer class="loader-footer">
+          <div class="progress-container">
+            <div class="progress-bar"></div>
+          </div>
+          <div class="boot-logs"></div>
+        </footer>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
